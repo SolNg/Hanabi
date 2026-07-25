@@ -1,0 +1,15 @@
+---
+变量更新规则:
+  互动现场.${角色分类}.${角色名}:
+    type: |-
+      状态: văn bản
+      当前安排: văn bản
+      当前项目: văn bản
+      当前反应: văn bản
+      备注: văn bản
+    check:
+      - Chỉ cập nhật nhân vật đã xuất hiện trong tương tác hiện tại.
+      - Chỉ ghi lại sự thật có thể thấy được, đã xảy ra hoặc đã được xác nhận trong tương tác hiện tại.
+      - Không bổ sung thiết lập nhân vật đầy đủ, không bổ sung nhân vật chưa được kích hoạt.
+      - Không viết hồ sơ nhân viên đầy đủ, lượng khách đầy đủ, hợp đồng chỉ định đầy đủ hay đơn hàng đầy đủ.
+      - Sau khi nhân vật rời khỏi tương tác hiện tại, không tiếp tục ghi trạng thái hiện trường của nhân vật đó nữa.

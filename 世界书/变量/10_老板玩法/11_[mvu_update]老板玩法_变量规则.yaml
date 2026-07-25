@@ -1,0 +1,44 @@
+---
+变量更新规则:
+  互动现场:
+    说明: Chỉ kích hoạt trường này khi bước vào tương tác tại hiện trường. Chỉ cập nhật những trường con đã xuất hiện trong tương tác hiện tại.
+    地点:
+      check:
+        - Cập nhật khi <user> và đối tượng di chuyển đến địa điểm mới trong lúc tương tác.
+    员工:
+      type: |-
+        {
+          [tên nhân viên: string]: { trạng thái, sắp xếp hiện tại, ghi chú }
+        }
+      check:
+        - Chỉ ghi lại nhân viên thực sự xuất hiện trong tương tác hiện tại.
+        - Cập nhật khi trạng thái nhân viên có thay đổi rõ ràng trong tương tác.
+        - Khi <user> trực tiếp thông báo điều chỉnh sắp xếp, cập nhật vào mục sắp xếp hiện tại.
+        - Ghi chú lưu lại sự thật quan trọng trong tương tác (nhân viên bày tỏ không hài lòng, đưa ra yêu cầu, thể hiện năng lực đặc biệt).
+    指名关系:
+      type: |-
+        {
+          [tên nhân viên: string]: { khách, trạng thái chỉ định, hạng mục hiện tại, trạng thái dịch vụ, trạng thái nhân viên, trạng thái khách, ghi chú }
+        }
+      check:
+        - Chỉ ghi lại quan hệ chỉ định thực sự liên quan trong tương tác.
+        - Cập nhật khi trạng thái dịch vụ thay đổi.
+        - Khi thái độ nhân viên hoặc khách thay đổi rõ ràng, ghi vào trường trạng thái tương ứng.
+    候选人:
+      type: |-
+        {
+          [tên ứng viên: string]: { nguồn gốc, trạng thái, mức lương ngày mong muốn: number, ghi chú }
+        }
+      check:
+        - Khi ứng viên bày tỏ thái độ rõ ràng thì cập nhật trạng thái.
+        - Khi ứng viên tiết lộ thông tin mới thì ghi vào ghi chú.
+        - Việc tuyển dụng do thao tác của <user> xác định, không tự ý phán định.
+    现场结果:
+      check:
+        - Chỉ ghi khi tương tác tạo ra kết quả rõ ràng.
+        - Điều chỉnh lương ngày: ghi lại khi <user> trực tiếp xác nhận tăng/giảm lương.
+        - Thay đổi sắp xếp nhân viên: ghi lại khi <user> trực tiếp quyết định đổi vị trí, đổi ca.
+        - Thay đổi chỉ định: ghi lại khi <user> can thiệp khiến chỉ định kết thúc, kéo dài hoặc thay đổi.
+        - Thay đổi dịch vụ: ghi lại khi <user> can thiệp khiến dịch vụ dừng lại hoặc nội dung thay đổi.
+        - Ảnh hưởng đến đánh giá: ghi ngắn gọn khi có khiếu nại từ khách, biểu hiện xuất sắc hoặc sự cố bất ngờ.
+        - Trường không có kết quả rõ ràng thì giữ trống.

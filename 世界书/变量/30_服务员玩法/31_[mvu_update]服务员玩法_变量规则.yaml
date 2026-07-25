@@ -1,0 +1,87 @@
+---
+变量更新规则:
+  成长记录:
+    check:
+      - Chỉ cập nhật trường thực sự có thay đổi trong lượt trả lời hiện tại
+      - Không tạo trường nào chưa có sẵn trong cấu trúc biến hiện tại
+      - Mọi số lần đều là số lần cộng dồn, không được đặt lại hoặc giảm xuống
+      - Tăng theo số lần thực tế đã hoàn thành rõ ràng trong lượt trả lời hiện tại; không được đoán khi không xác định được số lần
+      - Mời gọi, thương lượng, chuẩn bị, tưởng tượng, bị gián đoạn và kế hoạch không tính là đã hoàn thành
+    标准服务:
+      完成次数:
+        type: number
+        check:
+          - Tăng 1 khi toàn bộ dịch vụ tiêu chuẩn rõ ràng đã hoàn thành, không cập nhật trong lúc dịch vụ đang diễn ra
+          - Cùng một lần dịch vụ chỉ tính một lần
+      礼貌拒绝次数:
+        type: number
+        check:
+          - Chỉ tăng 1 khi <user> rõ ràng từ chối một yêu cầu thêm và yêu cầu đó đã hình thành kết quả rõ ràng
+          - Sự không chắc chắn hoặc né tránh trong đối thoại không tính là từ chối rõ ràng
+      好评次数:
+        type: number
+        check:
+          - Tăng 1 khi khách rõ ràng đưa ra đánh giá cao hoặc quyết toán xác nhận đánh giá tốt
+          - Cùng một lần dịch vụ chỉ tính một lần
+    擦边记录:
+      胸部接触次数:
+        type: number
+        check:
+          - Tăng 1 khi tiếp xúc ngực rõ ràng xảy ra
+          - Không ảnh hưởng đến ghi nhận dịch vụ tình dục hay ghi nhận duy trì
+      大腿接触次数:
+        type: number
+        check:
+          - Tăng 1 khi tiếp xúc đùi rõ ràng xảy ra
+          - Không ảnh hưởng đến ghi nhận dịch vụ tình dục hay ghi nhận duy trì
+      隔衣摩擦次数:
+        type: number
+        check:
+          - Tăng 1 khi cọ xát qua lớp vải rõ ràng xảy ra
+          - Không ảnh hưởng đến ghi nhận dịch vụ tình dục hay ghi nhận duy trì
+    性服务记录:
+      手交次数:
+        type: number
+        check:
+          - Tăng 1 khi thủ dâm bằng tay rõ ràng đã hoàn thành
+          - Mời gọi, thương lượng, động tác chuẩn bị, gián đoạn giữa chừng không tính là hoàn thành
+          - Sau khi hoàn thành, đổi 保持记录.未发生性服务 (ghi nhận duy trì.chưa xảy ra dịch vụ tình dục) thành false
+      口交次数:
+        type: number
+        check:
+          - Tăng 1 khi khẩu giao rõ ràng đã hoàn thành
+          - Mời gọi, thương lượng, động tác chuẩn bị, gián đoạn giữa chừng không tính là hoàn thành
+          - Sau khi hoàn thành, đổi 保持记录.未发生性服务 thành false
+      阴道性交次数:
+        type: number
+        check:
+          - Tăng 1 khi giao hợp qua âm đạo rõ ràng đã hoàn thành
+          - Sau khi hoàn thành, đổi 保持记录.阴道未插入 (ghi nhận duy trì.âm đạo chưa bị xâm nhập) thành false
+          - Đổi 保持记录.未发生性服务 thành false
+      肛交次数:
+        type: number
+        check:
+          - Tăng 1 khi giao hợp qua hậu môn rõ ràng đã hoàn thành
+          - Sau khi hoàn thành, đổi 保持记录.肛门未插入 (ghi nhận duy trì.hậu môn chưa bị xâm nhập) thành false
+          - Đổi 保持记录.未发生性服务 thành false
+      多人性服务次数:
+        type: number
+        check:
+          - Tăng 1 khi dịch vụ tình dục với nhiều người cùng lúc rõ ràng đã hoàn thành
+          - Đổi 保持记录.未发生性服务 thành false
+    保持记录:
+      阴道未插入:
+        type: boolean
+        check:
+          - Ban đầu là true, đổi thành false sau khi giao hợp qua âm đạo rõ ràng đã hoàn thành
+          - Hành vi mập mờ (擦边) không làm thay đổi mục này
+      肛门未插入:
+        type: boolean
+        check:
+          - Ban đầu là true, đổi thành false sau khi giao hợp qua hậu môn rõ ràng đã hoàn thành
+          - Hành vi mập mờ (擦边) không làm thay đổi mục này
+      未发生性服务:
+        type: boolean
+        check:
+          - Ban đầu là true, đổi thành false sau khi bất kỳ hạng mục dịch vụ tình dục nào rõ ràng đã hoàn thành
+          - Hành vi mập mờ (擦边) không làm thay đổi mục này

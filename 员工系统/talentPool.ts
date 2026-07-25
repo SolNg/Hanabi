@@ -1,0 +1,68 @@
+import type { EmployeeProfile } from './types';
+
+export const placeholderTalentPool: EmployeeProfile[] = [
+  {
+    id: 'employee_placeholder_001',
+    name: 'Nhân viên placeholder số 1',
+    ownership: 'talent_pool',
+    workHistory: 'Placeholder lý lịch làm việc, chờ thiết lập chính thức.',
+    dailySalary: 120,
+    expectedDailySalary: 150,
+    marketGrade: 'D',
+    marketPrice: 120,
+    nominationFee: 30,
+    specialPriceAdjustment: 0,
+    availableJobs: ['服务项目占位'],
+    personalInfo: {
+      age: 22,
+      height: 'Chờ tạo',
+      cupSize: 'Chờ tạo',
+      appearanceSummary: 'Chờ tạo',
+      bodySummary: 'Chờ tạo',
+      illustrationAsset: 'Chờ kết nối',
+      generatedProfileData: {},
+    },
+    worldbook: {
+      personaEntry: '员工占位一号_人设',
+      variableRuleEntry: '[mvu_update]员工占位一号_变量规则',
+      initialVariableEntry: '[initvar]员工占位一号_初始变量',
+    },
+    initialVariables: {
+      好感度: 0,
+      熟练度: 0,
+      当前状态: '待入职',
+    },
+  },
+  {
+    id: 'employee_placeholder_002',
+    name: 'Nhân viên placeholder số 2',
+    ownership: 'talent_pool',
+    workHistory: 'Placeholder lý lịch làm việc, chờ thiết lập chính thức.',
+    dailySalary: 160,
+    expectedDailySalary: 180,
+    marketGrade: 'C',
+    marketPrice: 180,
+    nominationFee: 60,
+    specialPriceAdjustment: 0,
+    availableJobs: ['服务项目占位'],
+    personalInfo: {
+      age: 24,
+      height: 'Chờ tạo',
+      cupSize: 'Chờ tạo',
+      appearanceSummary: 'Chờ tạo',
+      bodySummary: 'Chờ tạo',
+      illustrationAsset: 'Chờ kết nối',
+      generatedProfileData: {},
+    },
+    worldbook: {
+      personaEntry: '员工占位二号_人设',
+      variableRuleEntry: '[mvu_update]员工占位二号_变量规则',
+      initialVariableEntry: '[initvar]员工占位二号_初始变量',
+    },
+    initialVariables: {
+      好感度: 0,
+      熟练度: 0,
+      当前状态: '待入职',
+    },
+  },
+];

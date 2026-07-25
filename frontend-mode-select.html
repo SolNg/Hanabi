@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="vi-VN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoa Chưa Nở</title>
+    <style>
+      :root {
+        --ink: #090806;
+        --text: #f7ecdc;
+        --muted: rgba(247, 236, 220, 0.66);
+        --dim: rgba(247, 236, 220, 0.42);
+        --line: rgba(247, 236, 220, 0.22);
+        --line-strong: rgba(247, 236, 220, 0.45);
+        --gold: #d4b06e;
+        --tea: #78a69a;
+        --amber: #b87955;
+        font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        color: var(--text);
+        background: #100b08;
+        overflow: hidden;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      button {
+        border: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .title-screen {
+        position: relative;
+        width: min(100%, 1366px, calc(100svh * 16 / 9));
+        aspect-ratio: 16 / 9;
+        margin: 0 auto;
+        overflow: hidden;
+        background: var(--ink);
+        isolation: isolate;
+        --ui-font-scale: 1;
+        --panel-opacity: 0.62;
+      }
+
+      .title-screen[data-font-size="small"] {
+        --ui-font-scale: 0.92;
+      }
+
+      .title-screen[data-font-size="large"] {
+        --ui-font-scale: 1.08;
+      }
+
+      .title-screen[data-font-size="xlarge"] {
+        --ui-font-scale: 1.18;
+      }
+
+      .title-screen[data-font-family="elegant"] {
+        font-family: "LXGW WenKai", "KaiTi", "STKaiti", "Microsoft YaHei", serif;
+      }
+
+      .title-screen[data-font-family="clear"] {
+        font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      }
+
+      .title-screen[data-layout="compact"] .main-menu {
+        gap: 0.86rem;
+      }
+
+      .title-screen[data-layout="wide"] .main-menu {
+        gap: 1.46rem;
+      }
+
+      .title-screen[data-motion="off"] .mist {
+        animation: none;
+        opacity: 0.16;
+      }
+
+      .title-screen[data-motion="off"] .rain-lines {
+        opacity: 0.12;
+      }
+
+      .title-screen[data-panel="clear"] {
+        --panel-opacity: 0.76;
+      }
+
+      .title-screen[data-panel="soft"] {
+        --panel-opacity: 0.48;
+      }
+
+      .title-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(0.82) contrast(1.04) brightness(0.68);
+        transform: scale(1.02);
+      }
+
+      .vignette,
+      .mist,
+      .rain-lines {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .vignette {
+        z-index: 1;
+        background:
+          linear-gradient(90deg, rgba(5, 4, 3, 0.88), rgba(5, 4, 3, 0.18) 42%, rgba(5, 4, 3, 0.7)),
+          linear-gradient(180deg, rgba(5, 4, 3, 0.22), rgba(5, 4, 3, 0.1) 48%, rgba(5, 4, 3, 0.78));
+        transition: background 180ms ease;
+      }
+
+      .title-screen.panel-open .vignette {
+        background:
+          linear-gradient(90deg, rgba(5, 4, 3, 0.9), rgba(5, 4, 3, 0.26) 42%, rgba(5, 4, 3, 0.82)),
+          linear-gradient(180deg, rgba(5, 4, 3, 0.26), rgba(5, 4, 3, 0.22) 45%, rgba(5, 4, 3, 0.9));
+      }
+
+      .mist {
+        z-index: 2;
+        opacity: 0.32;
+        background:
+          radial-gradient(ellipse at 30% 78%, rgba(255, 233, 199, 0.28), transparent 26rem),
+          radial-gradient(ellipse at 68% 64%, rgba(133, 169, 158, 0.16), transparent 22rem);
+        animation: mistMove 8s ease-in-out infinite alternate;
+      }
+
+      @keyframes mistMove {
+        from {
+          transform: translateY(8px);
+          opacity: 0.24;
+        }
+        to {
+          transform: translateY(-8px);
+          opacity: 0.38;
+        }
+      }
+
+      .rain-lines {
+        z-index: 3;
+        opacity: 0.28;
+        mix-blend-mode: screen;
+      }
+
+      .top-name {
+        position: absolute;
+        top: 2.6rem;
+        left: 3.4rem;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: rgba(247, 236, 220, 0.82);
+        font-size: 1rem;
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
+      }
+
+      .top-name::before,
+      .top-name::after {
+        content: "";
+        width: 1.2rem;
+        height: 1.2rem;
+        border-top: 2px solid var(--muted);
+        border-left: 2px solid var(--muted);
+        transform: rotate(-45deg);
+      }
+
+      .top-name::after {
+        transform: rotate(135deg);
+      }
+
+      .title-copy {
+        position: absolute;
+        left: 6%;
+        bottom: 16%;
+        z-index: 5;
+        max-width: 28rem;
+        text-shadow: 0 7px 28px rgba(0, 0, 0, 0.7);
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .title-screen.panel-open .title-copy {
+        opacity: 0;
+        transform: translateY(-1.4rem) scale(0.98);
+        pointer-events: none;
+      }
+
+      .title-copy small {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .title-copy small::before {
+        content: "";
+        width: 2.4rem;
+        height: 1px;
+        background: var(--gold);
+      }
+
+      h1 {
+        margin: 0.7rem 0 0;
+        font-family: "Yu Mincho", "Songti SC", "SimSun", serif;
+        font-size: clamp(3.2rem, 7vw, 6.4rem);
+        font-weight: 500;
+        line-height: 0.92;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 1.2rem 0 0;
+        max-width: 24rem;
+        color: rgba(247, 236, 220, 0.74);
+        font-size: 0.95rem;
+        line-height: 1.8;
+      }
+
+      .main-menu {
+        position: absolute;
+        top: 34%;
+        right: 6.4%;
+        z-index: 8;
+        display: grid;
+        gap: 1.18rem;
+        min-width: 10rem;
+      }
+
+      .title-screen.panel-open .menu-button {
+        color: rgba(247, 236, 220, 0.46);
+      }
+
+      .title-screen.panel-open .menu-button:hover,
+      .title-screen.panel-open .menu-button.is-active {
+        color: #fff3e0;
+      }
+
+      .menu-button {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 1.9rem;
+        padding: 0;
+        background: transparent;
+        color: rgba(247, 236, 220, 0.72);
+        font-size: calc(1.18rem * var(--ui-font-scale));
+        text-align: left;
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.76);
+      }
+
+      .menu-button::after {
+        content: "";
+        width: 2.5rem;
+        height: 1px;
+        margin-left: 1.1rem;
+        background: currentColor;
+        opacity: 0;
+        transform: scaleX(0.3);
+        transform-origin: right;
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+      }
+
+      .menu-button:hover,
+      .menu-button.is-active {
+        color: #fff5e6;
+      }
+
+      .menu-button:hover::after,
+      .menu-button.is-active::after {
+        opacity: 0.8;
+        transform: scaleX(1);
+      }
+
+      .continue-pill {
+        position: absolute;
+        left: 50%;
+        bottom: 9%;
+        z-index: 6;
+        min-width: 18rem;
+        padding: 0.74rem 2.8rem;
+        border: 1px solid rgba(247, 236, 220, 0.32);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+        color: rgba(247, 236, 220, 0.55);
+        font-size: calc(1rem * var(--ui-font-scale));
+        text-align: center;
+        transform: translateX(-50%);
+        backdrop-filter: blur(4px);
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+      }
+
+      .title-screen.panel-open .continue-pill {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0.8rem);
+        pointer-events: none;
+      }
+
+      .mode-dock,
+      .floating-list {
+        position: absolute;
+        left: 6%;
+        right: 29%;
+        bottom: 6.4%;
+        z-index: 12;
+        display: none;
+      }
+
+      .mode-dock.is-open,
+      .floating-list.is-open {
+        display: block;
+      }
+
+      .mode-dock {
+        padding-top: 0;
+      }
+
+      .mode-title {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.82rem;
+        color: var(--muted);
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.75);
+      }
+
+      .mode-title h2 {
+        margin: 0;
+        color: #fff3e0;
+        font-size: calc(1.12rem * var(--ui-font-scale));
+        font-weight: 500;
+      }
+
+      .mode-title p {
+        margin: 0.25rem 0 0;
+        font-size: calc(0.78rem * var(--ui-font-scale));
+      }
+
+      .enter-button {
+        min-width: 5.4rem;
+        min-height: 2rem;
+        border: 1px solid rgba(247, 236, 220, 0.28);
+        border-radius: 999px;
+        background: rgba(8, 6, 5, 0.36);
+        color: rgba(247, 236, 220, 0.76);
+        font-size: calc(1rem * var(--ui-font-scale));
+        backdrop-filter: blur(10px);
+      }
+
+      .mode-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+
+      .mode-ribbon {
+        position: relative;
+        min-height: 6.35rem;
+        padding: 0.9rem 1.05rem 0.9rem 4.35rem;
+        background: linear-gradient(90deg, rgba(9, 7, 6, var(--panel-opacity)), rgba(9, 7, 6, 0.2));
+        color: rgba(247, 236, 220, 0.78);
+        text-align: left;
+        backdrop-filter: blur(10px);
+        clip-path: polygon(0 0, calc(100% - 1.2rem) 0, 100% 50%, calc(100% - 1.2rem) 100%, 0 100%, 0.9rem 50%);
+      }
+
+      .mode-ribbon::before,
+      .mode-ribbon::after {
+        content: "";
+        position: absolute;
+        left: 1.1rem;
+        right: 1.4rem;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(212, 176, 110, 0.8), transparent);
+      }
+
+      .mode-ribbon::before {
+        top: 0;
+      }
+
+      .mode-ribbon::after {
+        bottom: 0;
+      }
+
+      .mode-ribbon:hover,
+      .mode-ribbon.is-selected {
+        color: #fff5e6;
+        background: linear-gradient(90deg, rgba(74, 47, 30, 0.68), rgba(9, 7, 6, 0.25));
+      }
+
+      .mode-mark {
+        position: absolute;
+        left: 1.14rem;
+        top: 0.86rem;
+        display: grid;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        color: var(--gold);
+        font-family: "Yu Mincho", "Songti SC", serif;
+        font-size: 1.35rem;
+      }
+
+      .mode-mark svg {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+      }
+
+      .mode-ribbon h3 {
+        margin: 0;
+        font-size: calc(1.05rem * var(--ui-font-scale));
+        font-weight: 500;
+      }
+
+      .mode-ribbon p,
+      .floating-item p {
+        margin: 0.5rem 0 0;
+        color: var(--muted);
+        font-size: calc(0.78rem * var(--ui-font-scale));
+        line-height: 1.58;
+      }
+
+      .floating-list {
+        right: 42%;
+        bottom: 13%;
+        max-width: 34rem;
+      }
+
+      .floating-list.is-settings {
+        right: 40%;
+        bottom: 8%;
+        max-width: 42rem;
+      }
+
+      .floating-item {
+        padding: 0.82rem 0;
+        border-top: 1px dotted rgba(247, 236, 220, 0.28);
+        color: rgba(247, 236, 220, 0.82);
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.72);
+      }
+
+      .floating-item:last-child {
+        border-bottom: 1px dotted rgba(247, 236, 220, 0.28);
+      }
+
+      .floating-item h3 {
+        margin: 0;
+        font-size: calc(1rem * var(--ui-font-scale));
+        font-weight: 500;
+      }
+
+      .save-button {
+        display: block;
+        width: 100%;
+        background: transparent;
+        text-align: left;
+      }
+
+      .settings-panel {
+        display: grid;
+        gap: 0.72rem;
+      }
+
+      .settings-row {
+        display: grid;
+        grid-template-columns: minmax(6.2rem, 0.72fr) minmax(0, 1.6fr);
+        gap: 0.9rem;
+        padding: 0.76rem 0;
+        border-top: 1px dotted rgba(247, 236, 220, 0.26);
+      }
+
+      .settings-row:last-child {
+        border-bottom: 1px dotted rgba(247, 236, 220, 0.26);
+      }
+
+      .settings-label strong {
+        display: block;
+        color: rgba(255, 243, 224, 0.9);
+        font-size: calc(0.92rem * var(--ui-font-scale));
+        font-weight: 500;
+      }
+
+      .settings-label span {
+        display: block;
+        margin-top: 0.28rem;
+        color: rgba(247, 236, 220, 0.48);
+        font-size: calc(0.72rem * var(--ui-font-scale));
+        line-height: 1.45;
+      }
+
+      .settings-options {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.42rem;
+      }
+
+      .setting-choice {
+        min-height: 1.9rem;
+        padding: 0.32rem 0.78rem;
+        border: 1px solid rgba(247, 236, 220, 0.2);
+        border-radius: 999px;
+        background: rgba(8, 6, 5, 0.32);
+        color: rgba(247, 236, 220, 0.62);
+        font-size: calc(0.78rem * var(--ui-font-scale));
+        backdrop-filter: blur(8px);
+      }
+
+      .setting-choice:hover,
+      .setting-choice.is-selected {
+        border-color: rgba(212, 176, 110, 0.62);
+        background: rgba(74, 47, 30, 0.46);
+        color: #fff3e0;
+      }
+
+      .toast {
+        position: absolute;
+        left: 50%;
+        bottom: 4.5%;
+        z-index: 30;
+        padding: 0.56rem 1rem;
+        border-radius: 999px;
+        background: rgba(8, 6, 5, 0.68);
+        color: rgba(247, 236, 220, 0.86);
+        opacity: 0;
+        transform: translateX(-50%) translateY(12px);
+        pointer-events: none;
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .toast.is-show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 760px) {
+        .title-screen {
+          width: min(100%, calc(100svh * 9 / 16));
+          aspect-ratio: 9 / 16;
+        }
+
+        .top-name {
+          top: 1.2rem;
+          left: 1.1rem;
+          font-size: 0.82rem;
+        }
+
+        .title-copy {
+          left: 7%;
+          right: 7%;
+          bottom: 42%;
+        }
+
+        h1 {
+          font-size: 3.4rem;
+        }
+
+        .subtitle {
+          max-width: 18rem;
+          font-size: 0.82rem;
+          line-height: 1.65;
+        }
+
+        .main-menu {
+          top: auto;
+          right: 7%;
+          bottom: 7%;
+          gap: 0.7rem;
+        }
+
+        .title-screen.panel-open .main-menu {
+          opacity: 0;
+          transform: translateY(0.8rem);
+          pointer-events: none;
+        }
+
+        .menu-button {
+          font-size: calc(0.95rem * var(--ui-font-scale));
+        }
+
+        .continue-pill {
+          display: none;
+        }
+
+        .mode-dock,
+        .floating-list {
+          left: 7%;
+          right: 7%;
+          bottom: 34%;
+        }
+
+        .floating-list.is-settings {
+          top: 9.5%;
+          right: 7%;
+          bottom: auto;
+        }
+
+        .mode-row {
+          grid-template-columns: 1fr;
+          gap: 0.45rem;
+        }
+
+        .mode-ribbon {
+          min-height: 4.9rem;
+          padding: 0.72rem 0.9rem 0.72rem 3.8rem;
+        }
+
+        .mode-mark {
+          width: 2rem;
+          height: 2rem;
+          font-size: 1.05rem;
+        }
+
+        .mode-ribbon h3,
+        .floating-item h3 {
+          font-size: calc(0.92rem * var(--ui-font-scale));
+        }
+
+        .mode-ribbon p,
+        .floating-item p {
+          font-size: calc(0.72rem * var(--ui-font-scale));
+          line-height: 1.45;
+        }
+
+        .settings-panel {
+          gap: 0.44rem;
+        }
+
+        .settings-row {
+          grid-template-columns: 1fr;
+          gap: 0.48rem;
+          padding: 0.52rem 0;
+        }
+
+        .setting-choice {
+          min-height: 1.74rem;
+          padding: 0.26rem 0.64rem;
+          font-size: calc(0.72rem * var(--ui-font-scale));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="title-screen" id="titleScreen" aria-label="Màn hình tiêu đề Hoa Chưa Nở">
+      <img class="title-bg" src="https://i.postimg.cc/HxqNF83P/title-entrance-night.png" alt="" />
+      <div class="vignette"></div>
+      <div class="mist"></div>
+      <svg class="rain-lines" viewBox="0 0 1366 768" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="rainFade" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#fff2de" stop-opacity="0" />
+            <stop offset="0.48" stop-color="#fff2de" stop-opacity="0.5" />
+            <stop offset="1" stop-color="#fff2de" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path d="M338 0v760M402 0v760M718 0v760M846 0v760M1016 0v760" stroke="url(#rainFade)" stroke-width="1" />
+      </svg>
+
+      <div class="top-name">Mihiraki no Hana</div>
+
+      <section class="title-copy">
+        <small>Kinh doanh và gặp gỡ ôn tuyền hiện đại</small>
+        <h1>Hoa Chưa Nở</h1>
+        <p class="subtitle">Sương đêm bám lấy hành lang gỗ, ánh đèn dần sáng lên từ bên bể tắm. Chọn thân phận, rồi giao đêm nay cho tiếng nước.</p>
+      </section>
+
+      <nav class="main-menu" aria-label="Menu tiêu đề">
+        <button class="menu-button is-active" type="button" data-main="start">Bắt đầu trò chơi</button>
+        <button class="menu-button" type="button" data-main="continue">Tiếp tục trò chơi</button>
+        <button class="menu-button" type="button" data-main="load">Đọc save</button>
+        <button class="menu-button" type="button" data-main="modes">Chọn chế độ chơi</button>
+        <button class="menu-button" type="button" data-main="settings">Cài đặt</button>
+        <button class="menu-button" type="button" data-main="exit">Thoát giao diện</button>
+      </nav>
+
+      <button class="continue-pill" type="button" data-main="start">Chọn thân phận</button>
+
+      <section class="mode-dock" id="modeDock" aria-label="Chọn chế độ chơi">
+        <header class="mode-title">
+          <div>
+            <h2 id="panelTitle">Chọn thân phận tối nay</h2>
+            <p id="panelNote">Sau khi chọn lúc bắt đầu sẽ vào chế độ chơi tương ứng.</p>
+          </div>
+          <button class="enter-button" type="button" data-enter>Vào</button>
+        </header>
+        <div class="mode-row" id="panelBody"></div>
+      </section>
+
+      <section class="floating-list" id="floatingList" aria-label="Nội dung menu tiêu đề"></section>
+      <div class="toast" id="toast"></div>
+    </main>
+
+    <script>
+      const routes = {
+        boss: { name: "Chế độ chủ tiệm", saveMode: "老板", href: "./frontend-preview.html" },
+        customer: { name: "Chế độ khách", saveMode: "游客", href: "./frontend-customer-preview.html" },
+        waiter: { name: "Chế độ nhân viên", saveMode: "服务员", href: "./frontend-waiter-preview.html" },
+      };
+
+      const modeChoices = [
+        {
+          key: "boss",
+          mark: "店",
+          title: "Chế độ chủ tiệm",
+          text: "Kinh doanh, xếp ca, nhân tài, kết toán, và cũng có thể tự mình bước vào hiện trường.",
+        },
+        {
+          key: "customer",
+          mark: "客",
+          title: "Chế độ khách",
+          text: "Chỉ định, tiêu dùng, thiện cảm, liên hệ và hẹn riêng là những hướng tiến triển chính.",
+        },
+        {
+          key: "waiter",
+          mark: "侍",
+          title: "Chế độ nhân viên",
+          text: "Từ góc nhìn nhân viên nhận ca, tiếp đón, kết toán thu nhập và nâng hạng đánh giá.",
+        },
+      ];
+
+      const settingsStorageKey = "tangquan-title-display-settings";
+
+      const settingsConfig = [
+        {
+          key: "fontSize",
+          title: "Cỡ chữ",
+          note: "Kích thước văn bản khi đọc",
+          options: [
+            { value: "small", label: "Nhỏ" },
+            { value: "standard", label: "Tiêu chuẩn" },
+            { value: "large", label: "Lớn" },
+            { value: "xlarge", label: "Rất lớn" },
+          ],
+        },
+        {
+          key: "fontFamily",
+          title: "Kiểu chữ",
+          note: "Ưu tiên bầu không khí hay rõ ràng",
+          options: [
+            { value: "default", label: "Mặc định" },
+            { value: "elegant", label: "Tao nhã" },
+            { value: "clear", label: "Rõ ràng" },
+          ],
+        },
+        {
+          key: "layout",
+          title: "Bố cục giao diện",
+          note: "Tự động thích ứng các màn hình khác nhau",
+          options: [
+            { value: "auto", label: "Tự động" },
+            { value: "compact", label: "Gọn" },
+            { value: "wide", label: "Rộng rãi" },
+          ],
+        },
+        {
+          key: "textSpeed",
+          title: "Hiển thị văn bản",
+          note: "Nhịp độ xuất hiện của hội thoại",
+          options: [
+            { value: "instant", label: "Ngay lập tức" },
+            { value: "standard", label: "Tiêu chuẩn" },
+            { value: "slow", label: "Chậm" },
+          ],
+        },
+        {
+          key: "motion",
+          title: "Hiệu ứng nền",
+          note: "Cường độ sương mù và mưa",
+          options: [
+            { value: "on", label: "Bật" },
+            { value: "off", label: "Tắt" },
+          ],
+        },
+        {
+          key: "panel",
+          title: "Độ trong suốt hộp thoại",
+          note: "Ưu tiên chữ hay ưu tiên hình ảnh",
+          options: [
+            { value: "clear", label: "Rõ ràng" },
+            { value: "standard", label: "Tiêu chuẩn" },
+            { value: "soft", label: "Trong suốt" },
+          ],
+        },
+      ];
+
+      const defaultSettings = {
+        fontSize: "standard",
+        fontFamily: "default",
+        layout: "auto",
+        textSpeed: "standard",
+        motion: "on",
+        panel: "standard",
+      };
+
+      function loadSettings() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(settingsStorageKey) || "{}");
+          return settingsConfig.reduce(
+            (settings, group) => {
+              const allowedValues = group.options.map((option) => option.value);
+              if (allowedValues.includes(saved[group.key])) {
+                settings[group.key] = saved[group.key];
+              }
+              return settings;
+            },
+            { ...defaultSettings },
+          );
+        } catch {
+          return { ...defaultSettings };
+        }
+      }
+
+      const state = {
+        selectedMode: "boss",
+        panel: "landing",
+        settings: loadSettings(),
+      };
+
+      const titleScreen = document.querySelector("#titleScreen");
+      const modeDock = document.querySelector("#modeDock");
+      const floatingList = document.querySelector("#floatingList");
+      const panelTitle = document.querySelector("#panelTitle");
+      const panelNote = document.querySelector("#panelNote");
+      const panelBody = document.querySelector("#panelBody");
+      const toast = document.querySelector("#toast");
+
+      function showToast(text) {
+        toast.textContent = text;
+        toast.classList.add("is-show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("is-show"), 1600);
+      }
+
+      function modeMark(mark) {
+        return `
+          <span class="mode-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M32 4 56 18v28L32 60 8 46V18Z" fill="rgba(11,8,6,.38)" stroke="rgba(212,176,110,.68)" />
+              <path d="M20 18h24M20 46h24M14 32h36" stroke="rgba(247,236,220,.22)" />
+            </svg>
+            ${mark}
+          </span>`;
+      }
+
+      function saveSettings() {
+        try {
+          localStorage.setItem(settingsStorageKey, JSON.stringify(state.settings));
+        } catch {
+          showToast("Cài đặt đã được áp dụng cho bản xem trước hiện tại.");
+        }
+      }
+
+      function applySettings() {
+        titleScreen.dataset.fontSize = state.settings.fontSize;
+        titleScreen.dataset.fontFamily = state.settings.fontFamily;
+        titleScreen.dataset.layout = state.settings.layout;
+        titleScreen.dataset.textSpeed = state.settings.textSpeed;
+        titleScreen.dataset.motion = state.settings.motion;
+        titleScreen.dataset.panel = state.settings.panel;
+      }
+
+      function settingOptions(group) {
+        return group.options
+          .map(
+            (option) => `
+              <button
+                class="setting-choice ${state.settings[group.key] === option.value ? "is-selected" : ""}"
+                type="button"
+                data-setting="${group.key}"
+                data-value="${option.value}"
+              >${option.label}</button>
+            `,
+          )
+          .join("");
+      }
+
+      async function openPanel(key) {
+        state.panel = key;
+        document.querySelectorAll("[data-main]").forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.main === key);
+        });
+
+        const renderers = {
+          modes: renderModes,
+          load: renderLoad,
+          continue: renderContinue,
+          settings: renderSettings,
+          start: renderStart,
+        };
+
+        await (renderers[key] || renderModes)();
+      }
+
+      function showModeDock(title, note) {
+        titleScreen.classList.add("panel-open");
+        modeDock.classList.add("is-open");
+        floatingList.classList.remove("is-open");
+        floatingList.classList.remove("is-settings");
+        panelTitle.textContent = title;
+        panelNote.textContent = note;
+      }
+
+      function showFloating(items, variant = "") {
+        titleScreen.classList.add("panel-open");
+        modeDock.classList.remove("is-open");
+        floatingList.classList.add("is-open");
+        floatingList.classList.toggle("is-settings", variant === "settings");
+        floatingList.innerHTML = items.join("");
+      }
+
+      function renderLanding() {
+        state.panel = "landing";
+        titleScreen.classList.remove("panel-open");
+        modeDock.classList.remove("is-open");
+        floatingList.classList.remove("is-open");
+        floatingList.classList.remove("is-settings");
+        panelBody.innerHTML = "";
+        floatingList.innerHTML = "";
+      }
+
+      function renderModes() {
+        showModeDock("Chọn thân phận tối nay", "Sau khi chọn lúc bắt đầu sẽ vào chế độ chơi tương ứng.");
+        panelBody.innerHTML = modeChoices
+          .map(
+            (choice) => `
+              <button class="mode-ribbon ${state.selectedMode === choice.key ? "is-selected" : ""}" type="button" data-mode="${choice.key}">
+                ${modeMark(choice.mark)}
+                <h3>${choice.title}</h3>
+                <p>${choice.text}</p>
+              </button>
+            `,
+          )
+          .join("");
+      }
+
+      function renderStart() {
+        renderModes();
+      }
+
+      async function renderContinue() {
+        showFloating([
+          `<div class="floating-item">
+            <h3>Xem trước hình ảnh</h3>
+            <p>Việc đọc bản ghi chính thức sẽ được thực hiện trong giao diện chính thức.</p>
+          </div>`,
+        ]);
+      }
+
+      async function renderLoad() {
+        showFloating([
+          `<div class="floating-item">
+            <h3>Xem trước hình ảnh</h3>
+            <p>Nơi này không đọc bản ghi chính thức. Lối vào đọc chính thức nằm ở giao diện chính thức.</p>
+          </div>`,
+        ]);
+      }
+
+      function renderSettings() {
+        showFloating([
+          `<div class="settings-panel">
+            ${settingsConfig
+              .map(
+                (group) => `
+                  <div class="settings-row">
+                    <div class="settings-label">
+                      <strong>${group.title}</strong>
+                      <span>${group.note}</span>
+                    </div>
+                    <div class="settings-options">${settingOptions(group)}</div>
+                  </div>
+                `,
+              )
+              .join("")}
+          </div>`,
+        ], "settings");
+      }
+
+      async function enterSelectedMode() {
+        window.location.href = routes[state.selectedMode].href;
+      }
+
+      document.addEventListener("click", async (event) => {
+        const mainButton = event.target.closest("[data-main]");
+        if (mainButton) {
+          const key = mainButton.dataset.main;
+          if (key === "exit") {
+            showToast("Cửa sổ sẽ không đóng trong bản xem trước.");
+            return;
+          }
+          await openPanel(key);
+          return;
+        }
+
+        const settingButton = event.target.closest("[data-setting]");
+        if (settingButton) {
+          const key = settingButton.dataset.setting;
+          const value = settingButton.dataset.value;
+          const group = settingsConfig.find((item) => item.key === key);
+          if (!group || !group.options.some((option) => option.value === value)) {
+            return;
+          }
+          state.settings[key] = value;
+          applySettings();
+          saveSettings();
+          renderSettings();
+          showToast("Cài đặt đã được lưu.");
+          return;
+        }
+
+        const modeButton = event.target.closest("[data-mode]");
+        if (modeButton) {
+          state.selectedMode = modeButton.dataset.mode;
+          renderModes();
+          return;
+        }
+
+        if (event.target.closest("[data-enter]") || event.target.closest("[data-load-mode]")) {
+          await enterSelectedMode();
+        }
+      });
+
+      applySettings();
+      renderLanding();
+    </script>
+  </body>
+</html>

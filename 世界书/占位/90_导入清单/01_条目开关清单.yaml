@@ -1,0 +1,245 @@
+---
+说明: 'File này dùng cho script giao diện và việc đưa vào world book chính thức sau này; không phải chính văn prompt chính thức.'
+世界书:
+  默认书名: 'World book đang gắn với cuộc trò chuyện hiện tại'
+  店铺名: 'Hoa Chưa Nở'
+  规则:
+    - 'Entry chung luôn thường trực.'
+    - '3 thân phận chơi chỉ bật entry tương ứng với bản lưu hiện tại.'
+    - 'Entry nhân vật, khu vực, hạng mục, hiện trường mặc định tắt, do lối vào hiện tại bật tạm thời.'
+    - 'Entry bản lưu luôn bị vô hiệu hóa, không đưa vào prompt.'
+
+条目:
+  - id: common.worldview
+    条目名: '[未开之花][通用] Tổng cương thế giới quan'
+    启用: 常驻
+    内容位置: '../通用/01_世界观总纲.md'
+    未来写入: 'Bối cảnh xã hội đa chủng tộc, đa hình thái hiện đại.'
+
+  - id: common.holiday
+    条目名: '[未开之花][通用] Thiết lập dịp lễ'
+    启用: 常驻
+    内容位置: '../通用/09_节假日设定.md'
+    未来写入: 'Không khí dịp lễ, lý do tiêu dùng, bối cảnh hoạt động.'
+
+  - id: common.facility
+    条目名: '[未开之花][通用] Bố cục cơ sở vật chất'
+    启用: 常驻
+    内容位置: '../通用/02_汤泉设施布局.md'
+    未来写入: 'Tổng quan cơ sở hạ tầng và khu vực có thể mở rộng.'
+
+  - id: common.staff-service
+    条目名: '[未开之花][通用] Vị trí công việc và dịch vụ tiêu chuẩn'
+    启用: 常驻
+    内容位置: '../通用/03_岗位与标准服务.md'
+    未来写入: 'Nền tảng vị trí công việc và dịch vụ đứng đắn, không cố định bảng vị trí cuối cùng.'
+
+  - id: common.nomination
+    条目名: '[未开之花][通用] Chế độ chỉ định'
+    启用: 常驻
+    内容位置: '../通用/04_指名制度.md'
+    未来写入: 'Quan hệ chỉ định, chiếm dụng xuyên ngày, quyền sở hữu phí.'
+
+  - id: common.variable-format
+    条目名: '[未开之花][变量] Định dạng xuất'
+    启用: 常驻
+    内容位置: '../变量/00_通用/02_变量输出格式.yaml'
+    未来写入: 'Định dạng xuất khi cập nhật biến.'
+
+  - id: common.variable-list
+    条目名: '[未开之花][变量] Danh sách biến'
+    启用: 常驻
+    内容位置: '../变量/00_通用/01_变量列表.md'
+    未来写入: 'stat_data gửi cho AI trong lượt hiện tại.'
+
+  - id: common.variable-rule
+    条目名: '[未开之花][变量规则] Chung'
+    启用: 常驻
+    内容位置: '../变量/00_通用/04_[mvu_update]通用变量规则.yaml'
+    未来写入: 'Quy tắc cập nhật thời gian hiện tại, địa điểm người dùng, các trường hiện trường chung.'
+
+  - id: boss.rules.management
+    条目名: '[未开之花][规则] Kinh doanh thường trực'
+    启用: 经营者
+    内容位置: '../占位/10_老板/01_经营常驻规则.md'
+    未来写入: 'Quy tắc trần thuật thường trực của tuyến kinh doanh.'
+
+  - id: boss.rules.scene
+    条目名: '[未开之花][规则] Hiện trường kinh doanh'
+    启用: 经营者
+    内容位置: '../占位/10_老板/02_现场互动规则.md'
+    未来写入: 'Quy tắc tiếp nhận khi chủ kinh doanh từ nhân viên, khách, khu vực bước vào tương tác hiện trường.'
+
+  - id: boss.variable-rule
+    条目名: '[未开之花][变量规则] Hiện trường kinh doanh'
+    启用: 经营者
+    内容位置: '../变量/10_老板玩法/11_[mvu_update]老板玩法_变量规则.yaml'
+    未来写入: 'Trường có thể cập nhật khi tương tác hiện trường kinh doanh.'
+
+  - id: customer.rules.visit
+    条目名: '[未开之花][规则] Trải nghiệm đến tuyền'
+    启用: 到店客人
+    内容位置: '../占位/20_游客/01_到店游玩规则.md'
+    状态: 'Đã viết chính thức. Tuyến trải nghiệm đến tuyền, dịch vụ tiêu chuẩn, dịch vụ thêm, nguồn sự thật hiện tại.'
+
+  - id: customer.rules.relationship
+    条目名: '[未开之花][规则] Quan hệ và liên lạc'
+    启用: 到店客人
+    内容位置: '../占位/20_游客/02_关系与联系人规则.md'
+    状态: 'Đã viết chính thức. Thiện cảm tin tưởng, trạng thái liên lạc, trò chuyện trực tuyến, hẹn riêng, tuyến quan hệ.'
+
+  - id: customer.variable-rule
+    条目名: '[未开之花][变量规则] Hiện trường đến tuyền'
+    启用: 到店客人
+    内容位置: '../变量/20_游客玩法/21_[mvu_update]游客玩法_变量规则.yaml'
+    状态: 'Đã viết chính thức. Độ thiện cảm, độ tin tưởng, trạng thái liên lạc, số lần tương tác, số lần dịch vụ, số lần dịch vụ thêm, số lần hẹn riêng, tương tác gần nhất trong khối quan hệ hiện tại.'
+
+  - id: waiter.rules.work
+    条目名: '[未开之花][规则] Phục vụ tại tuyền'
+    启用: 在店服务员
+    内容位置: '../占位/30_服务员/01_在店服务规则.md'
+    状态: 'Đã viết chính thức. Nhịp độ làm việc, đón tiếp theo chỉ định, yêu cầu dịch vụ thêm, ưu tiên sự thật hiện tại, quyền tự chủ người dùng.'
+
+  - id: waiter.rules.growth
+    条目名: '[未开之花][规则] Kết quả trưởng thành'
+    启用: 在店服务员
+    内容位置: '../占位/30_服务员/02_成长结果规则.md'
+    状态: 'Đã viết chính thức. Ý nghĩa khách quan của dịch vụ tiêu chuẩn, mập mờ, dịch vụ tình dục, ghi nhận duy trì và nguyên tắc bình đẳng giữa các tuyến.'
+
+  - id: waiter.variable-rule
+    条目名: '[未开之花][变量规则] Hiện trường phục vụ'
+    启用: 在店服务员
+    内容位置: '../变量/30_服务员玩法/31_[mvu_update]服务员玩法_变量规则.yaml'
+    状态: 'Đã viết chính thức. Khối hồ sơ trưởng thành: 3 trường dịch vụ tiêu chuẩn, 3 trường mập mờ, 5 trường dịch vụ tình dục, 3 trường ghi nhận duy trì.'
+
+  - id: area.current
+    条目名: '[未开之花][区域] Khu vực hiện tại'
+    启用: 临时
+    内容位置: '../占位/40_动态条目/01_当前区域.md'
+    未来写入: 'Mẫu chính văn khu vực hiện tại; giao diện bật khi vào khu vực, tắt khi rời đi hoặc chuyển đổi.'
+
+  - id: project.current
+    条目名: '[未开之花][项目] Hạng mục hiện tại'
+    启用: 临时
+    内容位置: '../占位/40_动态条目/02_当前项目.md'
+    未来写入: 'Mẫu chính văn hạng mục hiện tại; bật khi xem dịch vụ hoặc vào hiện trường liên quan đến hạng mục.'
+
+  - id: character.current-employee
+    条目名: '[未开之花][角色] Nhân viên hiện tại'
+    启用: 临时
+    内容位置: '../占位/40_动态条目/03_当前员工.md'
+    未来写入: 'Mẫu entry nhân vật nhân viên hiện tại; bật khi nhân viên xuất hiện, trò chuyện hoặc xem dịch vụ.'
+
+  - id: character.current-guest
+    条目名: '[未开之花][角色] Khách hiện tại'
+    启用: 临时
+    内容位置: '../占位/40_动态条目/04_当前客人.md'
+    未来写入: 'Mẫu entry nhân vật khách hiện tại; bật khi liên quan đến khách được chỉ định hoặc khách đang được phục vụ hiện tại.'
+
+  - id: character.current-candidate
+    条目名: '[未开之花][角色] Ứng viên hiện tại'
+    启用: 临时
+    内容位置: '../占位/40_动态条目/05_当前候选人.md'
+    未来写入: 'Mẫu entry nhân vật ứng viên hiện tại; bật khi giao lưu chợ nhân tài hoặc phỏng vấn tuyển dụng.'
+
+批量条目:
+  说明:
+    - 'Các entry sau đây mặc định tắt.'
+    - 'Hoàn thành mở rộng chỉ cập nhật dữ liệu kinh doanh và phạm vi khả dụng của giao diện, không tự động bật các entry này.'
+    - 'Khi vào tương tác hiện trường, xem dịch vụ hoặc tương tác liên quan đến hạng mục, giao diện sẽ bật tạm thời theo địa điểm, hạng mục và cấp độ cơ sở vật chất hiện tại.'
+
+  基建等级:
+    数量: 60
+    id规则: 'facility.infrastructure.{tên hạ tầng}.lv{cấp độ}'
+    条目名规则: '[未开之花][基建] {tên hạ tầng} Lv{cấp độ}'
+    内容位置规则: '../占位/10_老板/区域/基建/{tên hạ tầng}_Lv{cấp độ}.md'
+    基建名:
+      - 占地规模
+      - 前台接待
+      - 更衣清洗
+      - 汤池
+      - 休息区
+      - 理疗区
+      - 包间
+      - 餐饮区
+      - 客房
+      - 庭院
+      - 员工休息室
+      - 后勤
+
+  建筑等级:
+    数量: 200
+    id规则: 'facility.building.{tên công trình}.lv{cấp độ}'
+    条目名规则: '[未开之花][建筑] {tên công trình} Lv{cấp độ}'
+    内容位置规则: '../占位/10_老板/区域/建筑/{tên công trình}_Lv{cấp độ}.md'
+    建筑名:
+      - 前台大厅
+      - 更衣清洗区
+      - 室内大浴场
+      - 榻榻米休息室
+      - 按摩室
+      - 简易包间
+      - 茶点角
+      - 简易客房
+      - 庭院小径
+      - 员工休息室
+      - 办公室与仓储
+      - 药汤池
+      - 精油理疗室
+      - 香氛蒸房
+      - 茶饮漫画休息区
+      - 足汤茶亭
+      - 包间汤池
+      - 料理台
+      - 洗衣仓储间
+      - 露天风吕
+      - 岩盘浴室
+      - 和室客房
+      - 静音书廊
+      - 药草护理室
+      - 美容护理间
+      - 榻榻米餐饮包间
+      - 排班管理室
+      - 员工夜班宿舍
+      - 会员休息廊
+      - 集中补给间
+      - 夜间休息厅
+      - 季节汤庭
+      - 会席厨房
+      - VIP庭院私汤
+      - 长住客房
+      - 员工培训室
+      - 团体包场区
+      - 天台观景汤
+      - 私宅式客房
+      - 别馆
+
+  项目条目:
+    数量: 23
+    id规则: 'project.lore.{tên hạng mục}'
+    条目名规则: '[未开之花][项目] {tên hạng mục}'
+    内容位置规则: '../占位/10_老板/项目/{tên hạng mục}.md'
+    项目名:
+      - 入浴休憩
+      - 休息区陪同
+      - 理疗按摩
+      - 包间休憩
+      - 药汤护理
+      - 私汤包间
+      - 精油理疗
+      - 香氛蒸房
+      - 足汤茶会
+      - 露天夜汤
+      - 岩盘热敷
+      - 餐饮套餐
+      - 静音长休
+      - 美容护理
+      - 会员夜茶
+      - 季节限定汤
+      - 会席料理
+      - 住宿包场
+      - VIP庭院私汤
+      - 团体包场
+      - 私宅长住
+      - 天台观景汤
+      - 别馆整宿预约

@@ -1,0 +1,55 @@
+---
+变量更新规则:
+  当前关系:
+    好感度:
+      type: number
+      range: 0~100
+      check:
+        - Chỉ cập nhật khi lượt trả lời hiện tại thực sự tạo ra thay đổi quan hệ
+        - Không cộng điểm máy móc mỗi lượt chỉ vì chào hỏi thông thường
+        - Sự tiến triển quan hệ nhẹ nhàng nhưng rõ ràng chỉ tạo ra biến động nhỏ
+        - Lời hứa quan trọng, giao lưu sâu sắc, kết quả thân mật rõ ràng có thể tạo ra biến động rõ rệt hơn
+        - Biên độ thay đổi phải khớp với cường độ sự kiện hiện tại, quan hệ đã có và thiết lập nhân vật của nhân viên
+        - Không nhảy vọt lớn chỉ vì một tương tác thông thường
+        - Không viết tỷ lệ thành công cố định hay khoảng số cố định
+    信任度:
+      type: number
+      range: 0~100
+      check:
+        - Chỉ cập nhật khi trong tương tác thể hiện hành vi liên quan đến sự tin tưởng
+        - Giữ lời hứa, giao tiếp thẳng thắn, tôn trọng ranh giới sẽ tăng độ tin tưởng
+        - Vượt ranh giới, không tôn trọng lời từ chối, nói một đằng làm một nẻo sẽ giảm độ tin tưởng
+        - Biên độ thay đổi khớp với cường độ sự kiện
+    联系状态:
+      type: "'未添加' | '可请求' | '已添加'"
+      check:
+        - Chỉ cập nhật thành "đã thêm" khi nhân viên rõ ràng đồng ý trao đổi cách liên lạc
+        - Chỉ mới đề nghị, bị từ chối hoặc đang do dự thì không cập nhật
+    互动次数:
+      type: number
+      check:
+        - Chỉ tăng khi xảy ra tương tác thực chất giữa hai bên
+        - Tương tác thực chất nghĩa là hai bên có giao lưu thực chất hoặc tiếp xúc dịch vụ
+        - Đứng xem một chiều hoặc đi ngang qua không tính
+    服务次数:
+      type: number
+      check:
+        - Không cập nhật trong lúc dịch vụ đang diễn ra, chỉ tăng khi dịch vụ hiện tại đã rõ ràng kết thúc
+        - Cùng một lần dịch vụ chỉ tính một lần, không được tính lặp lại trong tương tác sau đó
+    额外服务次数:
+      type: number
+      check:
+        - Chỉ tăng sau khi dịch vụ thêm thực sự đã hoàn thành
+        - Chỉ mới đề xuất, thăm dò, thương lượng, đồng ý rồi mới làm đều không tính là hoàn thành
+        - Phải là kết quả đã thực sự xảy ra trong lượt trả lời hiện tại
+    私下邀约次数:
+      type: number
+      check:
+        - Chỉ tăng khi buổi hẹn hoặc gặp riêng thực sự thành hiện thực
+        - Gửi tin nhắn mời không đồng nghĩa với việc đã hoàn thành gặp riêng
+        - Đối phương đồng ý đến hẹn và cảnh đó thực sự diễn ra thì mới tính một lần
+    最近互动:
+      check:
+        - Ghi lại một câu ngắn gọn, khách quan, sự thật đã xảy ra
+        - Ví dụ như "đã hoàn thành mát-xa trị liệu" hoặc "đã trò chuyện về chủ đề du lịch ở sân vườn"
+        - Không viết kế hoạch, suy đoán hay đánh giá

@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="vi-VN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hoa Chưa Nở - Lối chơi Nhân viên phục vụ</title>
+    <style>
+      :root {
+        --text: #f7ecdc;
+        --muted: rgba(247, 236, 220, 0.66);
+        --line: rgba(247, 236, 220, 0.2);
+        --line-strong: rgba(247, 236, 220, 0.42);
+        --gold: #d7b36d;
+        --tea: #80aa9c;
+        --blue: #88a9b4;
+        font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        background: #0f0a07;
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      button {
+        border: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .play-screen {
+        position: relative;
+        width: min(1366px, 100%);
+        aspect-ratio: 16 / 9;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #0b0806;
+        isolation: isolate;
+      }
+
+      .scene-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(0.84) contrast(1.04) brightness(0.7);
+        transform: scale(1.02);
+        transition:
+          filter 220ms ease,
+          transform 220ms ease;
+      }
+
+      .mode-menu .scene-bg,
+      .mode-story .scene-bg,
+      .mode-settle .scene-bg {
+        filter: saturate(0.68) contrast(0.96) brightness(0.46) blur(5px);
+        transform: scale(1.04);
+      }
+
+      .shade,
+      .steam,
+      .hud-lines {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .shade {
+        z-index: 1;
+        background:
+          radial-gradient(circle at 58% 43%, rgba(255, 222, 180, 0.14), transparent 23rem),
+          linear-gradient(90deg, rgba(5, 4, 3, 0.72), rgba(5, 4, 3, 0.14) 50%, rgba(5, 4, 3, 0.66)),
+          linear-gradient(180deg, rgba(5, 4, 3, 0.16), rgba(5, 4, 3, 0.72));
+      }
+
+      .steam {
+        z-index: 2;
+        opacity: 0.32;
+        background:
+          radial-gradient(ellipse at 34% 78%, rgba(255, 236, 204, 0.18), transparent 19rem),
+          radial-gradient(ellipse at 72% 70%, rgba(136, 169, 180, 0.16), transparent 18rem);
+        animation: steamMove 8s ease-in-out infinite alternate;
+      }
+
+      @keyframes steamMove {
+        from {
+          opacity: 0.24;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 0.38;
+          transform: translateY(-8px);
+        }
+      }
+
+      .hud-lines {
+        z-index: 3;
+        opacity: 0.28;
+      }
+
+      .corner-brand {
+        position: absolute;
+        top: 2rem;
+        left: 2.25rem;
+        z-index: 8;
+        display: flex;
+        align-items: center;
+        gap: 0.72rem;
+        text-shadow: 0 5px 16px rgba(0, 0, 0, 0.74);
+      }
+
+      .brand-seal {
+        display: grid;
+        place-items: center;
+        width: 2.2rem;
+        height: 2.2rem;
+        color: var(--gold);
+        font-family: "Yu Mincho", "Songti SC", serif;
+        font-size: 1.2rem;
+        background: linear-gradient(135deg, rgba(212, 176, 110, 0.24), transparent), rgba(8, 6, 5, 0.28);
+        clip-path: polygon(50% 0, 100% 24%, 100% 76%, 50% 100%, 0 76%, 0 24%);
+      }
+
+      .brand-text strong {
+        display: block;
+        font-weight: 500;
+      }
+
+      .brand-text span {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .left-rail {
+        position: absolute;
+        top: 7.4rem;
+        left: 2.25rem;
+        z-index: 8;
+        width: 11rem;
+      }
+
+      .self-plaque {
+        margin-bottom: 1.3rem;
+        padding: 0.9rem 1rem 1.08rem;
+        background: linear-gradient(180deg, rgba(28, 39, 54, 0.76), rgba(17, 24, 34, 0.54));
+        text-align: center;
+        clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
+        backdrop-filter: blur(10px);
+      }
+
+      .self-plaque b {
+        display: block;
+        font-family: "Yu Mincho", "Songti SC", serif;
+        font-size: 2.4rem;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .self-plaque span {
+        display: block;
+        margin-top: 0.3rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .status-slip {
+        display: grid;
+        grid-template-columns: 2rem 1fr;
+        align-items: center;
+        min-height: 2.45rem;
+        margin-bottom: 0.7rem;
+        background: linear-gradient(90deg, rgba(17, 24, 34, 0.72), rgba(17, 24, 34, 0.34));
+        color: rgba(247, 236, 220, 0.86);
+        box-shadow: inset 0 0 0 1px rgba(247, 236, 220, 0.16);
+        backdrop-filter: blur(8px);
+      }
+
+      .status-slip svg {
+        width: 1.1rem;
+        height: 1.1rem;
+        margin: auto;
+        opacity: 0.86;
+      }
+
+      .status-slip strong {
+        padding-right: 0.6rem;
+        text-align: right;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .top-center {
+        position: absolute;
+        top: 1.8rem;
+        left: 50%;
+        z-index: 8;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: rgba(247, 236, 220, 0.86);
+        transform: translateX(-50%);
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+      }
+
+      .gem {
+        width: 0.7rem;
+        height: 0.7rem;
+        background: linear-gradient(135deg, #fff2df, #88a9b4);
+        transform: rotate(45deg);
+      }
+
+      .top-icons {
+        position: absolute;
+        top: 1.8rem;
+        right: 2rem;
+        z-index: 9;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .icon-button {
+        width: 2.2rem;
+        height: 2.2rem;
+        display: grid;
+        place-items: center;
+        background: transparent;
+        color: rgba(247, 236, 220, 0.74);
+      }
+
+      .icon-button:hover {
+        color: #fff7e8;
+      }
+
+      .icon-button svg {
+        width: 1.45rem;
+        height: 1.45rem;
+      }
+
+      .sprite-spot {
+        position: absolute;
+        left: 42%;
+        right: 26%;
+        bottom: 7%;
+        z-index: 5;
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        pointer-events: none;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .mode-menu .sprite-spot,
+      .mode-story .sprite-spot,
+      .mode-settle .sprite-spot {
+        opacity: 0;
+        transform: translateY(1.1rem);
+      }
+
+      .sprite-spot img {
+        width: min(22rem, 100%);
+        height: auto;
+        filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.55));
+      }
+
+      .right-actions {
+        position: absolute;
+        top: 30%;
+        right: 3.2rem;
+        z-index: 9;
+        display: grid;
+        gap: 0.85rem;
+        width: 12rem;
+      }
+
+      .action-pill {
+        display: grid;
+        grid-template-columns: 1fr 2.7rem;
+        align-items: center;
+        min-height: 2.85rem;
+        padding-left: 1.2rem;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(8, 6, 5, 0.7), rgba(8, 6, 5, 0.34));
+        color: rgba(247, 236, 220, 0.78);
+        text-align: left;
+        backdrop-filter: blur(8px);
+      }
+
+      .action-pill:hover {
+        color: #fff7e8;
+        background: linear-gradient(90deg, rgba(42, 65, 70, 0.74), rgba(8, 6, 5, 0.38));
+      }
+
+      .mode-menu .right-actions,
+      .mode-story .right-actions,
+      .mode-settle .right-actions {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .mode-menu .dialogue,
+      .mode-story .dialogue,
+      .mode-settle .dialogue {
+        opacity: 0;
+        transform: translateY(1.1rem);
+        pointer-events: none;
+      }
+
+      .mode-menu .left-rail,
+      .mode-story .left-rail,
+      .mode-settle .left-rail {
+        opacity: 0.16;
+      }
+
+      .action-pill svg {
+        width: 1.6rem;
+        height: 1.6rem;
+        opacity: 0.72;
+      }
+
+      .dialogue {
+        position: absolute;
+        left: 4.5%;
+        right: 4.5%;
+        bottom: 3.7%;
+        z-index: 10;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .nameplate {
+        display: inline-flex;
+        align-items: center;
+        min-width: 9rem;
+        min-height: 2.25rem;
+        padding: 0 1.2rem;
+        margin-left: 1.2rem;
+        background: linear-gradient(90deg, rgba(31, 45, 55, 0.82), rgba(31, 45, 55, 0.46));
+        color: #fff3e2;
+        font-family: "Yu Mincho", "Songti SC", serif;
+        clip-path: polygon(0 0, calc(100% - 1.3rem) 0, 100% 50%, calc(100% - 1.3rem) 100%, 0 100%);
+        backdrop-filter: blur(8px);
+      }
+
+      .dialogue-strip {
+        min-height: 5.9rem;
+        padding: 1rem 1.35rem 1.05rem;
+        background: linear-gradient(180deg, rgba(8, 6, 5, 0.58), rgba(8, 6, 5, 0.38));
+        color: rgba(247, 236, 220, 0.9);
+        box-shadow:
+          inset 0 1px 0 rgba(247, 236, 220, 0.24),
+          inset 0 -1px 0 rgba(247, 236, 220, 0.18);
+        backdrop-filter: blur(12px);
+      }
+
+      .dialogue-text {
+        margin: 0;
+        max-width: 65rem;
+        font-size: 1rem;
+        line-height: 1.85;
+      }
+
+      .menu-layer,
+      .story-layer,
+      .settle-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 22;
+        display: none;
+      }
+
+      .mode-menu .menu-layer {
+        display: grid;
+        grid-template-columns: 10rem minmax(0, 1fr);
+        gap: 2.2rem;
+        padding: 5.4rem 4.6rem 4.2rem;
+      }
+
+      .mode-story .story-layer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 13rem;
+        gap: 2rem;
+        padding: 5.4rem 4.6rem 4.2rem;
+      }
+
+      .mode-settle .settle-layer {
+        display: grid;
+        place-items: center;
+        padding: 5rem;
+      }
+
+      .menu-tabs {
+        align-self: center;
+        display: grid;
+        gap: 0.82rem;
+      }
+
+      .menu-tab {
+        position: relative;
+        min-height: 2.15rem;
+        padding: 0 0 0 1rem;
+        background: transparent;
+        color: rgba(247, 236, 220, 0.62);
+        text-align: left;
+      }
+
+      .menu-tab::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.4rem;
+        bottom: 0.4rem;
+        width: 3px;
+        background: var(--blue);
+        opacity: 0.35;
+      }
+
+      .menu-tab::after {
+        content: "";
+        position: absolute;
+        left: 4.5rem;
+        right: 0;
+        top: 50%;
+        border-top: 1px dotted rgba(247, 236, 220, 0.22);
+      }
+
+      .menu-tab:hover,
+      .menu-tab.is-active {
+        color: #fff7e8;
+      }
+
+      .menu-tab.is-active::before {
+        opacity: 1;
+      }
+
+      .menu-main,
+      .story-text,
+      .settle-sheet {
+        min-width: 0;
+        background: linear-gradient(90deg, rgba(7, 5, 4, 0.28), rgba(7, 5, 4, 0.08));
+        backdrop-filter: blur(12px);
+      }
+
+      .menu-main {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
+      .menu-head,
+      .story-head,
+      .settle-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0 0 0.85rem;
+        border-bottom: 1px solid rgba(247, 236, 220, 0.22);
+      }
+
+      .menu-head h2,
+      .story-title,
+      .settle-head h2 {
+        margin: 0;
+        font-size: 1.45rem;
+        font-weight: 500;
+      }
+
+      .menu-head p,
+      .story-note,
+      .settle-head p {
+        margin: 0.3rem 0 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .menu-content,
+      .story-body {
+        min-height: 0;
+        overflow: auto;
+        padding: 0.9rem 0.3rem 0.2rem 0;
+      }
+
+      .story-text {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
+      .story-body {
+        color: rgba(247, 236, 220, 0.9);
+        font-size: 0.96rem;
+        line-height: 1.9;
+      }
+
+      .story-body p {
+        margin: 0 0 0.82rem;
+      }
+
+      .story-tags,
+      .story-choices,
+      .row-actions,
+      .settle-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .story-tags {
+        margin-top: 0.46rem;
+      }
+
+      .story-choices {
+        align-self: center;
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .settle-sheet {
+        width: min(48rem, 88%);
+      }
+
+      .settle-body {
+        padding-top: 0.9rem;
+      }
+
+      .data-grid {
+        display: grid;
+        gap: 0.82rem;
+      }
+
+      .data-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .data-grid.three {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .data-line,
+      .metric-line {
+        position: relative;
+        padding: 0.72rem 0.2rem 0.78rem 0.85rem;
+        border-top: 1px dotted rgba(247, 236, 220, 0.24);
+      }
+
+      .data-line::before,
+      .metric-line::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.9rem;
+        bottom: 0.9rem;
+        width: 3px;
+        background: var(--blue);
+        opacity: 0.62;
+      }
+
+      .metric-line span,
+      .data-line span {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .metric-line strong {
+        display: block;
+        margin-top: 0.22rem;
+        color: #fff3e0;
+        font-size: 1.42rem;
+        font-weight: 500;
+      }
+
+      .data-line h3 {
+        margin: 0;
+        color: #fff3e0;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      .data-line p,
+      .metric-line p {
+        margin: 0.35rem 0 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.58;
+      }
+
+      .line-head,
+      .metric-head {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 0.8rem;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 1.35rem;
+        padding: 0 0.48rem;
+        border-radius: 999px;
+        background: rgba(247, 236, 220, 0.08);
+        color: rgba(247, 236, 220, 0.75);
+        font-size: 0.72rem;
+      }
+
+      .tag.good {
+        color: #dff5ea;
+        background: rgba(128, 170, 156, 0.22);
+      }
+
+      .tag.warn {
+        color: #e5f5ff;
+        background: rgba(136, 169, 180, 0.24);
+      }
+
+      .thin-meter {
+        height: 0.34rem;
+        margin-top: 0.58rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(247, 236, 220, 0.1);
+      }
+
+      .thin-meter span {
+        display: block;
+        width: var(--value);
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--blue), var(--gold));
+      }
+
+      .small-button,
+      .choice-button {
+        min-height: 2rem;
+        padding: 0 0.78rem;
+        border: 1px solid rgba(247, 236, 220, 0.18);
+        border-radius: 999px;
+        background: rgba(7, 5, 4, 0.28);
+        color: rgba(247, 236, 220, 0.72);
+        backdrop-filter: blur(8px);
+      }
+
+      .small-button:hover,
+      .choice-button:hover {
+        border-color: var(--line-strong);
+        color: #fff7e8;
+      }
+
+      .toast {
+        position: absolute;
+        left: 50%;
+        bottom: 15%;
+        z-index: 40;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(7, 5, 4, 0.72);
+        color: rgba(247, 236, 220, 0.9);
+        opacity: 0;
+        transform: translateX(-50%) translateY(12px);
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+        pointer-events: none;
+        backdrop-filter: blur(10px);
+      }
+
+      .toast.is-show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 760px) {
+        .play-screen {
+          aspect-ratio: 9 / 16;
+        }
+
+        .corner-brand {
+          top: 1rem;
+          left: 1rem;
+        }
+
+        .left-rail {
+          top: 5.2rem;
+          left: 1rem;
+          width: 8.4rem;
+        }
+
+        .self-plaque b {
+          font-size: 1.7rem;
+        }
+
+        .status-slip {
+          min-height: 2rem;
+          font-size: 0.76rem;
+        }
+
+        .top-center {
+          top: 1rem;
+          left: auto;
+          right: 4.2rem;
+          transform: none;
+          font-size: 0.72rem;
+        }
+
+        .top-icons {
+          top: 0.75rem;
+          right: 0.8rem;
+          gap: 0.4rem;
+        }
+
+        .sprite-spot {
+          left: 28%;
+          right: -10%;
+          bottom: 16%;
+        }
+
+        .sprite-spot img {
+          width: min(18rem, 120%);
+        }
+
+        .right-actions {
+          top: 31%;
+          right: 1rem;
+          width: 8.4rem;
+          gap: 0.48rem;
+        }
+
+        .action-pill {
+          grid-template-columns: 1fr 2rem;
+          min-height: 2.2rem;
+          padding-left: 0.75rem;
+          font-size: 0.78rem;
+        }
+
+        .dialogue {
+          left: 3%;
+          right: 3%;
+          bottom: 2.6%;
+        }
+
+        .nameplate {
+          min-height: 1.9rem;
+          font-size: 0.9rem;
+        }
+
+        .dialogue-strip {
+          min-height: 7rem;
+          padding: 0.78rem 0.86rem;
+        }
+
+        .dialogue-text {
+          font-size: 0.82rem;
+          line-height: 1.68;
+        }
+
+        .mode-menu .menu-layer,
+        .mode-story .story-layer {
+          grid-template-columns: 1fr;
+          gap: 0.6rem;
+          padding: 4.5rem 0.9rem 1rem;
+        }
+
+        .menu-tabs,
+        .story-choices {
+          display: flex;
+          align-self: start;
+          gap: 0.45rem;
+          overflow-x: auto;
+        }
+
+        .menu-tab {
+          min-width: 4.8rem;
+          padding-left: 0.7rem;
+          white-space: nowrap;
+          font-size: 0.78rem;
+        }
+
+        .menu-tab::after {
+          display: none;
+        }
+
+        .menu-head h2,
+        .story-title,
+        .settle-head h2 {
+          font-size: 1rem;
+        }
+
+        .menu-head p,
+        .data-line p,
+        .metric-line p,
+        .story-note {
+          font-size: 0.72rem;
+        }
+
+        .data-grid.two,
+        .data-grid.three {
+          grid-template-columns: 1fr;
+        }
+
+        .settle-layer {
+          padding: 1rem;
+        }
+
+        .settle-sheet {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="play-screen mode-scene" id="game" aria-label="Xem trước lối chơi nhân viên phục vụ">
+      <img class="scene-bg" src="https://i.postimg.cc/JnfFSHK2/waiter-staff-room-night.png" alt="" />
+      <div class="shade"></div>
+      <div class="steam"></div>
+      <svg class="hud-lines" viewBox="0 0 1366 768" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M36 42h170M36 714h300M1020 90h260M1180 692h126" stroke="rgba(247,236,220,.24)" />
+        <path d="M180 90v580M1194 138v500" stroke="rgba(247,236,220,.12)" stroke-dasharray="4 8" />
+      </svg>
+
+      <header class="corner-brand">
+        <span class="brand-seal">汤</span>
+        <span class="brand-text"><strong>Hoa Chưa Nở</strong><span>Góc nhìn nhân viên phục vụ</span></span>
+      </header>
+
+      <aside class="left-rail" aria-label="Trạng thái bản thân">
+        <div class="self-plaque"><b>B</b><span>Hạng hiện tại</span></div>
+        <div class="status-slip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 2v4M16 2v4M5 9h14" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
+          <strong id="shiftText">Ca tối</strong>
+        </div>
+        <div class="status-slip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12" stroke="currentColor" stroke-width="1.8" /></svg>
+          <strong id="areaText">Bể tắm hương bưởi</strong>
+        </div>
+        <div class="status-slip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4zM16 12h4" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
+          <strong id="incomeText">¥1,320</strong>
+        </div>
+      </aside>
+
+      <div class="top-center">
+        <span>Ca tối</span>
+        <span class="gem"></span><span class="gem"></span><span class="gem"></span>
+        <span>Chờ vào ca</span>
+      </div>
+
+      <nav class="top-icons" aria-label="Thao tác trên cùng">
+        <button class="icon-button" type="button" data-title-screen aria-label="Về màn hình tiêu đề">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+        </button>
+        <button class="icon-button" type="button" data-mode="menu" aria-label="Mở menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-width="2" /></svg>
+        </button>
+      </nav>
+
+      <section class="sprite-spot" aria-hidden="true">
+        <img src="https://i.postimg.cc/NfgYpZVt/114.png" alt="" />
+      </section>
+
+      <nav class="right-actions" aria-label="Thao tác cảnh">
+        <button class="action-pill" type="button" data-waiter-action="startShift">Vào ca<svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="1.8" /></svg></button>
+        <button class="action-pill" type="button" data-waiter-action="serviceGuest">Tiếp khách<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7Z" fill="currentColor" /></svg></button>
+        <button class="action-pill" type="button" data-menu-tab="growth">Trưởng thành<svg viewBox="0 0 24 24"><path d="M5 17 10 12l3 3 6-8" fill="none" stroke="currentColor" stroke-width="1.8" /></svg></button>
+        <button class="action-pill" type="button" data-menu-tab="income">Thu nhập<svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM16 12h4" fill="none" stroke="currentColor" stroke-width="1.8" /></svg></button>
+        <button class="action-pill" type="button" data-waiter-action="closeShift">Tan ca<svg viewBox="0 0 24 24"><path d="M7 4h10v16H7zM9 8h6M9 12h6M9 16h3" fill="none" stroke="currentColor" stroke-width="1.8" /></svg></button>
+      </nav>
+
+      <section class="dialogue" aria-label="Hội thoại">
+        <div class="nameplate" id="speakerName">Trưởng ca</div>
+        <div class="dialogue-strip">
+          <p class="dialogue-text" id="dialogueText">"Ca tối sắp bắt đầu rồi. Bạn có thể vào ca trước, hoặc xem lại tiến độ chỉ định và xếp hạng hôm nay."</p>
+        </div>
+      </section>
+
+      <section class="menu-layer" aria-label="Menu nhân viên phục vụ">
+        <nav class="menu-tabs" id="menuTabs" aria-label="Phân loại menu"></nav>
+        <section class="menu-main">
+          <header class="menu-head">
+            <div>
+              <h2 id="menuTitle">Ca làm</h2>
+              <p id="menuNote">Xác nhận vị trí, vào ca và tan ca.</p>
+            </div>
+            <button class="small-button" type="button" data-mode="scene">Quay lại</button>
+          </header>
+          <div class="menu-content" id="menuContent"></div>
+        </section>
+      </section>
+
+      <section class="story-layer" aria-label="Hiện trường tiếp khách">
+        <section class="story-text">
+          <header class="story-head">
+            <div>
+              <h2 class="story-title" id="storyTitle">Hiện trường tiếp khách</h2>
+              <p class="story-note" id="storyNote">Bể tắm hương bưởi · Khách đặt lịch</p>
+              <div class="story-tags" id="storyTags"></div>
+            </div>
+            <button class="small-button" type="button" data-mode="scene">Rời đi</button>
+          </header>
+          <article class="story-body" id="storyBody"></article>
+        </section>
+        <aside class="story-choices" aria-label="Lựa chọn hiện trường">
+          <button class="choice-button" type="button" data-story-choice="standard">Hoàn thành tiêu chuẩn</button>
+          <button class="choice-button" type="button" data-story-choice="extra">Hoàn thành thêm</button>
+          <button class="choice-button" type="button" data-story-choice="refuse">Từ chối lịch sự</button>
+          <button class="choice-button" type="button" data-story-choice="finish">Kết thúc tiếp khách</button>
+          <span class="tag warn" id="storyRecord">Chưa kết toán.</span>
+        </aside>
+      </section>
+
+      <section class="settle-layer" aria-label="Kết toán tan ca">
+        <section class="settle-sheet">
+          <header class="settle-head">
+            <div>
+              <h2>Kết toán tan ca</h2>
+              <p>Thu nhập hôm nay sẽ chia thành lương ngày, tiền tip, thu nhập thêm và chia sẻ chỉ định.</p>
+            </div>
+            <button class="small-button" type="button" data-mode="scene">Về phòng nghỉ</button>
+          </header>
+          <div class="settle-body">
+            <div class="data-grid three">
+              <section class="metric-line"><span>Thu nhập hôm nay</span><strong id="settleIncome">¥1,320</strong><p>Tổng của 4 khoản.</p></section>
+              <section class="metric-line"><span>Điểm đánh giá</span><strong id="settleRating">64</strong><p>Sẽ ảnh hưởng đến tiến trình lên hạng.</p></section>
+              <section class="metric-line"><span>Tiếp khách hôm nay</span><strong id="settleServices">3</strong><p>Gồm hoàn thành tiêu chuẩn và hoàn thành thêm.</p></section>
+            </div>
+            <div class="settle-actions" style="margin-top:.9rem;">
+              <button class="choice-button" type="button" data-waiter-action="afterWork">Hoạt động sau giờ làm</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <div class="toast" id="toast"></div>
+    </main>
+
+    <script>
+      const game = document.querySelector("#game");
+      const menuTabs = document.querySelector("#menuTabs");
+      const menuTitle = document.querySelector("#menuTitle");
+      const menuNote = document.querySelector("#menuNote");
+      const menuContent = document.querySelector("#menuContent");
+      const shiftText = document.querySelector("#shiftText");
+      const areaText = document.querySelector("#areaText");
+      const incomeText = document.querySelector("#incomeText");
+      const speakerName = document.querySelector("#speakerName");
+      const dialogueText = document.querySelector("#dialogueText");
+      const storyTitle = document.querySelector("#storyTitle");
+      const storyNote = document.querySelector("#storyNote");
+      const storyTags = document.querySelector("#storyTags");
+      const storyBody = document.querySelector("#storyBody");
+      const storyRecord = document.querySelector("#storyRecord");
+      const settleIncome = document.querySelector("#settleIncome");
+      const settleRating = document.querySelector("#settleRating");
+      const settleServices = document.querySelector("#settleServices");
+      const toast = document.querySelector("#toast");
+
+      const yuan = (value) => `¥${Number(value).toLocaleString("vi-VN")}`;
+      const percent = (value) => `${Math.round(value)}%`;
+
+      const state = {
+        view: "shift",
+        shift: "Ca tối",
+        area: "Bể tắm hương bưởi",
+        grade: "Hạng B",
+        workState: "Chờ vào ca",
+        dailySalary: 760,
+        tips: 180,
+        extraIncome: 260,
+        nominationShare: 120,
+        ratingScore: 64,
+        nominations: 2,
+        nominationRate: 34,
+        resultCounts: {
+          standard: 12,
+          extra: 4,
+          refused: 6,
+          praise: 15,
+        },
+        skills: {
+          "Dịch vụ tiêu chuẩn": 72,
+          "Ứng đối lời nói": 58,
+          "Chăm sóc tay": 46,
+          "Đồng hành thân mật": 28,
+          "Giữ giới hạn": 81,
+        },
+        routes: {
+          "Lộ trình trong sạch": 64,
+          "Lộ trình khéo léo": 48,
+          "Lộ trình thu nhập cao": 31,
+        },
+        logs: ["Hôm nay có 2 khách đã chỉ định trước.", "Lần từ chối lịch sự trước vẫn nhận được đánh giá 4.6 điểm.", "Còn thiếu 36 điểm để vào kỳ xét Hạng A."],
+      };
+
+      const tabs = {
+        shift: ["Ca làm", "Xác nhận vị trí, vào ca và tan ca."],
+        service: ["Tiếp khách", "Vào hiện trường phục vụ hôm nay từ đây."],
+        nomination: ["Chỉ định", "Xem chỉ định hôm nay và thu nhập tương ứng."],
+        growth: ["Trưởng thành", "Chỉ ghi lại số lần kết quả khách quan và độ thành thạo."],
+        income: ["Thu nhập", "Lương ngày, tiền tip, thu nhập thêm và chia sẻ chỉ định."],
+        rating: ["Xếp hạng", "Điểm đánh giá, tiến độ lộ trình và ngưỡng hạng dưới."],
+        log: ["Nhật ký", "Những việc vừa xảy ra gần đây."],
+      };
+
+      function tag(text, tone = "") {
+        return `<span class="tag ${tone}">${text}</span>`;
+      }
+
+      function meter(value) {
+        return `<div class="thin-meter" style="--value:${Math.max(0, Math.min(100, value))}%"><span></span></div>`;
+      }
+
+      function incomeTotal() {
+        return state.dailySalary + state.tips + state.extraIncome + state.nominationShare;
+      }
+
+      function serviceTotal() {
+        return state.resultCounts.standard + state.resultCounts.extra;
+      }
+
+      function showToast(text) {
+        toast.textContent = text;
+        toast.classList.add("is-show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("is-show"), 1500);
+      }
+
+      function setLine(name, text) {
+        speakerName.textContent = name;
+        dialogueText.textContent = text;
+      }
+
+      function syncHud() {
+        shiftText.textContent = state.shift;
+        areaText.textContent = state.area;
+        incomeText.textContent = yuan(incomeTotal());
+      }
+
+      function setMode(mode) {
+        game.classList.remove("mode-scene", "mode-menu", "mode-story", "mode-settle");
+        game.classList.add(`mode-${mode}`);
+        if (mode === "menu") {
+          renderMenu();
+        }
+      }
+
+      function renderTabs() {
+        menuTabs.innerHTML = Object.entries(tabs)
+          .map(([key, item]) => `<button class="menu-tab ${state.view === key ? "is-active" : ""}" type="button" data-menu-tab="${key}">${item[0]}</button>`)
+          .join("");
+      }
+
+      function renderMenu() {
+        const [title, note] = tabs[state.view];
+        menuTitle.textContent = title;
+        menuNote.textContent = note;
+        renderTabs();
+        menuContent.innerHTML =
+          {
+            shift: renderShift,
+            service: renderService,
+            nomination: renderNomination,
+            growth: renderGrowth,
+            income: renderIncome,
+            rating: renderRating,
+            log: renderLog,
+          }[state.view]?.() || "";
+      }
+
+      function renderShift() {
+        return `
+          <div class="data-grid three">
+            <section class="metric-line"><span>Ca làm</span><strong>${state.shift}</strong><p>${state.workState}</p></section>
+            <section class="metric-line"><span>Vị trí</span><strong>${state.area}</strong><p>Dịch vụ tiêu chuẩn hôm nay do vị trí quyết định.</p></section>
+            <section class="metric-line"><span>Xếp hạng</span><strong>${state.grade}</strong><p>Lương ngày ${yuan(state.dailySalary)}.</p></section>
+          </div>
+          <div class="data-grid" style="margin-top:.8rem;">
+            <section class="data-line"><div class="line-head"><h3>Vào ca</h3><button class="small-button" type="button" data-waiter-action="startShift">Vào ca</button></div><p>Vào khu vực phụ trách hôm nay, bắt đầu tiếp khách đặt lịch.</p></section>
+            <section class="data-line"><div class="line-head"><h3>Nghỉ</h3><button class="small-button" type="button" data-waiter-action="rest">Nghỉ</button></div><p>Tạm rời vị trí, vẫn giữ ca làm hiện tại.</p></section>
+            <section class="data-line"><div class="line-head"><h3>Tan ca</h3><button class="small-button" type="button" data-waiter-action="closeShift">Kết toán tan ca</button></div><p>Kết toán thu nhập và điểm đánh giá hôm nay.</p></section>
+          </div>
+        `;
+      }
+
+      function renderService() {
+        return `
+          <div class="data-grid three">
+            <section class="metric-line"><span>Vị trí hiện tại</span><strong>${state.area}</strong><p>Ca tối chủ yếu tiếp khách đặt lịch.</p></section>
+            <section class="metric-line"><span>Chờ tiếp</span><strong>3</strong><p>Gồm ${state.nominations} khách chỉ định.</p></section>
+            <section class="metric-line"><span>Điểm đánh giá hôm nay</span><strong>${state.ratingScore}</strong><p>Kết quả phục vụ sẽ tiếp tục tích lũy.</p></section>
+          </div>
+          <div class="data-grid" style="margin-top:.8rem;">
+            <section class="data-line"><div class="line-head"><h3>Khách đặt lịch</h3><button class="small-button" type="button" data-waiter-action="serviceGuest">Tiếp khách</button></div><p>Đến Bể tắm hương bưởi tiếp vị khách tiếp theo.</p></section>
+            <section class="data-line"><div class="line-head"><h3>Ông chủ tuần tra</h3><button class="small-button" type="button" data-waiter-action="bossInspect">Ứng phó</button></div><p>Ông chủ có thể kiểm tra tình trạng phục vụ và phản hồi của khách.</p></section>
+            <section class="data-line"><div class="line-head"><h3>Dọn dẹp khu vực</h3><button class="small-button" type="button" data-waiter-action="cleanArea">Dọn dẹp</button></div><p>Dọn khăn, hương liệu và trà nước, nâng cao đánh giá cơ bản.</p></section>
+          </div>
+        `;
+      }
+
+      function renderNomination() {
+        return `
+          <div class="data-grid three">
+            <section class="metric-line"><span>Chỉ định hôm nay</span><strong>${state.nominations}</strong><p>Khách chỉ định sẽ chiếm khung giờ tương ứng.</p></section>
+            <section class="metric-line"><span>Tỷ lệ được chỉ định</span><strong>${percent(state.nominationRate)}</strong><p>Đánh giá càng cao, khách quen càng dễ chỉ định lại.</p></section>
+            <section class="metric-line"><span>Chia sẻ chỉ định</span><strong>${yuan(state.nominationShare)}</strong><p>Dự kiến chia sẻ hôm nay.</p></section>
+          </div>
+          <div class="data-grid" style="margin-top:.8rem;">
+            <section class="data-line"><div class="line-head"><h3>Khách quen 1</h3><button class="small-button" type="button" data-waiter-action="serviceGuest">Tiếp khách</button></div><p>Nửa đầu ca tối đặt lịch Bể tắm hương bưởi.</p></section>
+            <section class="data-line"><div class="line-head"><h3>Khách quen 2</h3><button class="small-button" type="button" data-waiter-action="serviceGuest">Tiếp khách</button></div><p>Nửa sau ca tối đặt lịch đồng hành khu nghỉ ngơi.</p></section>
+          </div>
+        `;
+      }
+
+      function renderGrowth() {
+        return `
+          <div class="data-grid three">
+            <section class="metric-line"><span>Hoàn thành tiêu chuẩn</span><strong>${state.resultCounts.standard}</strong><p>Dịch vụ trong phạm vi vị trí hoàn thành ổn định.</p></section>
+            <section class="metric-line"><span>Hoàn thành thêm</span><strong>${state.resultCounts.extra}</strong><p>Kết quả ngoài dịch vụ tích lũy.</p></section>
+            <section class="metric-line"><span>Từ chối lịch sự</span><strong>${state.resultCounts.refused}</strong><p>Giữ giới hạn cũng sẽ để lại ghi nhận.</p></section>
+          </div>
+          <div class="data-grid two" style="margin-top:.8rem;">
+            ${Object.entries(state.skills)
+              .map(
+                ([name, value]) => `<section class="data-line"><div class="metric-head"><h3>${name}</h3>${tag(percent(value))}</div>${meter(value)}</section>`,
+              )
+              .join("")}
+          </div>
+        `;
+      }
+
+      function renderIncome() {
+        return `
+          <div class="data-grid three">
+            <section class="metric-line"><span>Lương ngày</span><strong>${yuan(state.dailySalary)}</strong><p>Do xếp hạng và thương lượng quyết định.</p></section>
+            <section class="metric-line"><span>Tiền tip</span><strong>${yuan(state.tips)}</strong><p>Đến từ đánh giá của khách và biểu hiện tại chỗ.</p></section>
+            <section class="metric-line"><span>Thu nhập thêm</span><strong>${yuan(state.extraIncome)}</strong><p>Đến từ kết quả hoàn thành thêm.</p></section>
+          </div>
+          <div class="data-grid two" style="margin-top:.8rem;">
+            <section class="metric-line"><span>Chia sẻ chỉ định</span><strong>${yuan(state.nominationShare)}</strong><p>Phần chia sẻ từ khách chỉ định hôm nay.</p></section>
+            <section class="metric-line"><span>Tổng cộng</span><strong>${yuan(incomeTotal())}</strong><p>Sẽ ghi vào thu nhập hôm nay khi kết toán tan ca.</p></section>
+          </div>
+        `;
+      }
+
+      function renderRating() {
+        return `
+          <div class="data-grid three">
+            <section class="metric-line"><span>Hạng hiện tại</span><strong>${state.grade}</strong><p>Còn thiếu ${100 - state.ratingScore} điểm để vào kỳ xét Hạng A.</p></section>
+            <section class="metric-line"><span>Điểm đánh giá</span><strong>${state.ratingScore}</strong><p>Tích lũy từ đánh giá, chỉ định và kết quả phục vụ.</p></section>
+            <section class="metric-line"><span>Ghi nhận khen ngợi</span><strong>${state.resultCounts.praise}</strong><p>Đánh giá cao lâu dài sẽ thúc đẩy xếp hạng.</p></section>
+          </div>
+          <div class="data-grid three" style="margin-top:.8rem;">
+            ${Object.entries(state.routes)
+              .map(
+                ([name, value]) => `<section class="data-line"><div class="line-head"><h3>${name}</h3>${tag(percent(value), value >= 60 ? "good" : "")}</div>${meter(value)}<p>${routeNote(name)}</p></section>`,
+              )
+              .join("")}
+          </div>
+        `;
+      }
+
+      function routeNote(name) {
+        return {
+          "Lộ trình trong sạch": "Dịch vụ tiêu chuẩn và từ chối lịch sự cũng có thể thúc đẩy.",
+          "Lộ trình khéo léo": "Dựa vào giao tiếp, chất lượng dịch vụ và tiền tip để thúc đẩy.",
+          "Lộ trình thu nhập cao": "Hoàn thành thêm càng nhiều, tăng càng nhanh.",
+        }[name];
+      }
+
+      function renderLog() {
+        return `<div class="data-grid">${state.logs.map((log) => `<section class="data-line"><h3>${log}</h3><p>Nhật ký sẽ tiếp tục được thêm vào khi chơi.</p></section>`).join("")}</div>`;
+      }
+
+      function openStory(kind = "guest") {
+        const title = kind === "inspect" ? "Ông chủ tuần tra" : "Hiện trường tiếp khách";
+        storyTitle.textContent = title;
+        storyNote.textContent = `${state.area} · ${kind === "inspect" ? "Ông chủ" : "Khách đặt lịch"}`;
+        storyTags.innerHTML = [state.area, kind === "inspect" ? "Tuần tra" : "Tiếp khách", state.grade].map((item) => tag(item)).join("");
+        storyRecord.textContent = "Chưa kết toán.";
+        storyBody.innerHTML =
+          kind === "inspect"
+            ? "<p>Ông chủ đẩy cửa bước vào, trước tiên xem qua tình trạng dọn dẹp khu vực, rồi hỏi về phản hồi của vị khách trước.</p><p>Từ đây có thể tự nhiên chuyển sang báo cáo, kiểm tra chất lượng dịch vụ hoặc đề xuất tăng lương và các tương tác khác.</p>"
+            : "<p>Khách đặt lịch được đưa đến Bể tắm hương bưởi, hơi nước lan qua bình phong, trong phòng chỉ còn lại tiếng nước khe khẽ.</p><p>Bạn có thể tùy chọn hoàn thành dịch vụ tiêu chuẩn, thúc đẩy kết quả thêm, hoặc từ chối lịch sự những yêu cầu không muốn nhận.</p>";
+        setMode("story");
+      }
+
+      function closeShift() {
+        settleIncome.textContent = yuan(incomeTotal());
+        settleRating.textContent = state.ratingScore;
+        settleServices.textContent = serviceTotal();
+        setMode("settle");
+      }
+
+      document.addEventListener("click", (event) => {
+        if (event.target.closest("[data-title-screen]")) {
+          window.location.href = "./frontend-mode-select.html";
+          return;
+        }
+
+        const mode = event.target.closest("[data-mode]");
+        if (mode) {
+          setMode(mode.dataset.mode);
+          return;
+        }
+
+        const tab = event.target.closest("[data-menu-tab]");
+        if (tab) {
+          state.view = tab.dataset.menuTab;
+          setMode("menu");
+          renderMenu();
+          return;
+        }
+
+        const storyChoice = event.target.closest("[data-story-choice]");
+        if (storyChoice) {
+          const choice = storyChoice.dataset.storyChoice;
+          if (choice === "standard") {
+            state.resultCounts.standard += 1;
+            state.resultCounts.praise += 1;
+            state.ratingScore += 2;
+            state.tips += 60;
+            storyRecord.textContent = "Hoàn thành tiêu chuẩn +1, tiền tip +¥60.";
+            storyBody.insertAdjacentHTML("beforeend", "<p>Lần này dịch vụ hoàn thành theo tiêu chuẩn, khách đưa ra đánh giá tốt ổn định.</p>");
+          } else if (choice === "extra") {
+            state.resultCounts.extra += 1;
+            state.ratingScore += 4;
+            state.extraIncome += 180;
+            state.routes["Lộ trình thu nhập cao"] = Math.min(100, state.routes["Lộ trình thu nhập cao"] + 5);
+            storyRecord.textContent = "Hoàn thành thêm +1, thu nhập thêm +¥180.";
+            storyBody.insertAdjacentHTML("beforeend", "<p>Kết quả thêm lần này đã được ghi nhận, thu nhập và điểm đánh giá đều tăng.</p>");
+          } else if (choice === "refuse") {
+            state.resultCounts.refused += 1;
+            state.ratingScore += 1;
+            state.routes["Lộ trình trong sạch"] = Math.min(100, state.routes["Lộ trình trong sạch"] + 4);
+            storyRecord.textContent = "Từ chối lịch sự +1, điểm đánh giá +1.";
+            storyBody.insertAdjacentHTML("beforeend", "<p>Yêu cầu bị từ chối lịch sự, hiện trường vẫn giữ được nhịp phục vụ có thể chấp nhận.</p>");
+          } else {
+            syncHud();
+            renderMenu();
+            setMode("scene");
+            showToast("Lần tiếp khách này đã được ghi nhận.");
+          }
+          storyBody.scrollTop = storyBody.scrollHeight;
+          syncHud();
+          return;
+        }
+
+        const action = event.target.closest("[data-waiter-action]");
+        if (action) {
+          const key = action.dataset.waiterAction;
+          if (key === "startShift") {
+            state.workState = "Đã vào ca";
+            setLine("Trưởng ca", "\"Được, đi đến Bể tắm hương bưởi đi. Tối nay giữ vững đánh giá trước đã.\"");
+            showToast("Đã vào ca.");
+            renderMenu();
+          } else if (key === "rest") {
+            state.workState = "Nghỉ ngắn";
+            setLine("Đồng nghiệp", "\"Nghỉ một chút cũng tốt, lát nữa khách đặt lịch sẽ đông hơn.\"");
+            showToast("Đang nghỉ.");
+            renderMenu();
+          } else if (key === "closeShift") {
+            closeShift();
+          } else if (key === "serviceGuest") {
+            openStory("guest");
+          } else if (key === "bossInspect") {
+            openStory("inspect");
+          } else if (key === "cleanArea") {
+            state.ratingScore += 1;
+            state.skills["Dịch vụ tiêu chuẩn"] = Math.min(100, state.skills["Dịch vụ tiêu chuẩn"] + 2);
+            showToast("Đã dọn dẹp khu vực, điểm đánh giá +1.");
+            renderMenu();
+          } else if (key === "afterWork") {
+            showToast("Hoạt động sau giờ làm sẽ được tích hợp sau.");
+          }
+        }
+      });
+
+      syncHud();
+      renderMenu();
+    </script>
+  </body>
+</html>

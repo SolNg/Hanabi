@@ -1,0 +1,13 @@
+---
+变量更新规则:
+  当前时间:
+    format: "YYYY年MM月DD日 星期X"
+    check:
+      - Chỉ cập nhật khi trong lượt trả lời rõ ràng có xảy ra chuyển sang ngày khác (như quyết toán tiến sang hôm sau, nghỉ một ngày, kết thúc chỉ định xuyên ngày).
+      - Đối thoại, di chuyển, quá trình dịch vụ, quan sát trong cùng một ngày thì không cập nhật.
+  用户:
+    所在地:
+      check:
+        - Cập nhật khi <user> rõ ràng di chuyển đến khu vực mới, như "đi đến bồn tắm", "bước vào văn phòng", "rời khỏi cửa hàng".
+        - Đối thoại, quan sát, dịch vụ tiếp diễn trong cùng một địa điểm thì không cập nhật.
+        - Dùng tên địa điểm tự nhiên: đại sảnh, bồn tắm, khu nghỉ ngơi, phòng riêng, khu trị liệu, khu ăn uống, phòng khách, sân vườn, phòng nghỉ nhân viên, văn phòng. Khi ra ngoài thì ghi địa điểm cụ thể.
